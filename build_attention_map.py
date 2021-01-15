@@ -97,6 +97,7 @@ def build_attention_map_bottomup(node,att_map):
 		return att_map
 	h = att_map.shape[0]-1
 	if node.nuclearity=='Nucleus':
+		#### if without nucleus, set the number as 1 here.
 		att_map[h-node.level,node.start_idx:node.end_idx,node.start_idx:node.end_idx]=2
 	else:
 		att_map[h-node.level,node.start_idx:node.end_idx,node.start_idx:node.end_idx]=1
@@ -227,108 +228,59 @@ def get_leaf_nodes(node):
 		return leaves
 
 if __name__ == '__main__':
-	#####CNNDM
-	# for d in ['train','val','test']:
-	# 	# save_trees_folder = '/scratch/discourse_application_for_summarization/cnndm/brackets_%s/'%(d)
-	# 	# save_attnmap_folder = '/scratch/wenxiao/attnmap/dep_attnmask_%s/'%(d)
-	# 	# save_attnmap_folder = '/scratch/wenxiao/attnmap/rand_attnmask_%s/'%(d)
-	# 	save_attnmap_folder = '/scratch/wenxiao/attnmap/attn_map_norm_%s/'%(d)
-	# 	#save_encodings_folder = '/scratch/discourse_application_for_summarization/discourse_pos_embeddings_val'
-	# 	#save_encodings_folder = '/scratch/discourse_application_for_summarization/discourse_pos_embeddings_test'
-	# 	if not os.path.exists(save_attnmap_folder):
-	# 		os.mkdir(save_attnmap_folder)
-
-	# 	bracket_files = [os.path.join(save_trees_folder, fname) for fname in os.listdir(save_trees_folder) if fname.endswith('.out.bracket')]
-	# 	level_dict = {}
-	# 	for idx,bracket_file in enumerate(bracket_files):
-	# 		root_node=build_tree(bracket_file)
-
-	# 		###### Build attention map fpr dep tree
-	# 		# dep_nodes=const_to_dep_tree(root_node)
-	# 		# par_attention_mask,chil_attention_mask=make_dep_attention_mask(dep_nodes)
-	# 		# out = {}
-	# 		# out['par_attention_mask'] = par_attention_mask
-	# 		# out['chil_attention_mask']=chil_attention_mask
-
-	# 		##### Build attention map for constituency tree
-	# 		height = set_height_bottomup(root_node)
-	# 		max_level=set_level_topdown(root_node,0)
-	# 		level = max_level+1
-	# 		level_dict[level] = level_dict.get(level,0)+1
-	# 		attn_map=build_attention_map(root_node,max_level)
-	# 		avg_attn_map = np.sum(attn_map,axis=0)/np.diag(np.sum(attn_map!=0,axis=0))
-
-	# 		##### Build random  attention map 
-	# 		# height = set_height_bottomup(root_node)
-	# 		# max_level=set_level_topdown(root_node,0)
-	# 		# attn_map=build_attention_map_random(root_node)
-	# 		# avg_attn_map = attn_map
-
-
-
-
-
-	# 		avg_attn_map = avg_attn_map/np.sum(avg_attn_map,axis=0)
-	# 		# avg_attn_map=torch.nn.functional.softmax(torch.tensor(avg_attn_map))
-	# 		avg_attn_map = torch.tensor(avg_attn_map.transpose())
-	# 		out=avg_attn_map
-
-
-	# 		f = os.path.join(save_attnmap_folder, os.path.basename(bracket_file).replace('.bracket', '.attnmap'))
-	# 		torch.save(out, f)
-	# 		if idx%1000==0:
-	# 			print('%d/%d finished in the %s set.'%(idx,len(bracket_files),d))
-	# 			sys.stdout.flush()	
-	# 	# print(level_dict)
-
-
-	#####NYT
-	for d in ['train','valid','test']:
-		save_trees_folder_1 = '/scratch/discourse_application_for_summarization/nyt/train_brackets/'
-		save_trees_folder_2 = '/scratch/discourse_application_for_summarization/nyt/valid_brackets/'
-		save_trees_folder_3 = '/scratch/discourse_application_for_summarization/nyt/test_brackets/'
-		save_trees_folder_4 = '/scratch/Wen_NYT_second/brackets/'
-		save_attnmap_folder = '/scratch/wenxiao/attnmap/nyt/attn_map_nuc_norm_%s/'%(d)
+	####CNNDM
+	for d in ['train','val','test']:
+		# save_trees_folder = '/scratch/discourse_application_for_summarization/cnndm/brackets_%s/'%(d)
+		# save_attnmap_folder = '/scratch/wenxiao/attnmap/dep_attnmask_%s/'%(d)
+		# save_attnmap_folder = '/scratch/wenxiao/attnmap/rand_attnmask_%s/'%(d)
+		save_attnmap_folder = '/scratch/wenxiao/attnmap/attn_map_norm_%s/'%(d)
+		#save_encodings_folder = '/scratch/discourse_application_for_summarization/discourse_pos_embeddings_val'
+		#save_encodings_folder = '/scratch/discourse_application_for_summarization/discourse_pos_embeddings_test'
 		if not os.path.exists(save_attnmap_folder):
-			os.makedirs(save_attnmap_folder)
-		data_dir = '/scratch/wenxiao/NYT_data_split_Xu_final/%s/'%(d)
-		all_files = [f for f in os.listdir(data_dir) if f.endswith('.pt')]
-		for i,f in enumerate(all_files):
-			all_data=torch.load(data_dir+f)
-			failed=0
-			for data in all_data:
-				doc_id = data['doc_id']
-				if os.path.exists(save_trees_folder_1+doc_id+'.out.bracket'):
-					bracket_file = save_trees_folder_1+doc_id+'.out.bracket'
-				elif os.path.exists(save_trees_folder_2+doc_id+'.out.bracket'):
-					bracket_file = save_trees_folder_2+doc_id+'.out.bracket'
-				elif os.path.exists(save_trees_folder_3+doc_id+'.out.bracket'):
-					bracket_file = save_trees_folder_3+doc_id+'.out.bracket'
-				elif os.path.exists(save_trees_folder_4+doc_id+'.out.bracket'):
-					bracket_file = save_trees_folder_4+doc_id+'.out.bracket'
-				else:
-					failed+=1
-					continue
-				try:
-					root_node=build_tree(bracket_file)
-				except:
-					print('%s failed to load.'%(doc_id))
-					failed+=1
-					continue
-				##### Build attention map for constituency tree
-				height = set_height_bottomup(root_node)
-				max_level=set_level_topdown(root_node,0)
-				attn_map=build_attention_map(root_node,max_level)
-				avg_attn_map = np.sum(attn_map,axis=0)/np.diag(np.sum(attn_map!=0,axis=0))
-				avg_attn_map = avg_attn_map/np.sum(avg_attn_map,axis=0)
-				avg_attn_map = torch.tensor(avg_attn_map.transpose())
-				out=avg_attn_map
+			os.mkdir(save_attnmap_folder)
 
-				f = os.path.join(save_attnmap_folder, doc_id+'.out.attnmap')
-				torch.save(out, f)
-			print('%d/%d finished in the %s set. Failed data: %d/%d'%(i,len(all_files),d,failed,len(all_data)))
-			sys.stdout.flush()	
+		bracket_files = [os.path.join(save_trees_folder, fname) for fname in os.listdir(save_trees_folder) if fname.endswith('.out.bracket')]
+		level_dict = {}
+		for idx,bracket_file in enumerate(bracket_files):
+			root_node=build_tree(bracket_file)
 
+			###### Build attention map fpr dep tree
+			# dep_nodes=const_to_dep_tree(root_node)
+			# par_attention_mask,chil_attention_mask=make_dep_attention_mask(dep_nodes)
+			# out = {}
+			# out['par_attention_mask'] = par_attention_mask
+			# out['chil_attention_mask']=chil_attention_mask
+
+			##### Build attention map for constituency tree
+			height = set_height_bottomup(root_node)
+			max_level=set_level_topdown(root_node,0)
+			level = max_level+1
+			level_dict[level] = level_dict.get(level,0)+1
+			attn_map=build_attention_map(root_node,max_level)
+			avg_attn_map = np.sum(attn_map,axis=0)/np.diag(np.sum(attn_map!=0,axis=0))
+
+			##### Build random  attention map 
+			# height = set_height_bottomup(root_node)
+			# max_level=set_level_topdown(root_node,0)
+			# attn_map=build_attention_map_random(root_node)
+			# avg_attn_map = attn_map
+
+
+
+
+
+			avg_attn_map = avg_attn_map/np.sum(avg_attn_map,axis=0)
+			# avg_attn_map=torch.nn.functional.softmax(torch.tensor(avg_attn_map))
+			avg_attn_map = torch.tensor(avg_attn_map.transpose())
+			out=avg_attn_map
+
+
+			f = os.path.join(save_attnmap_folder, os.path.basename(bracket_file).replace('.bracket', '.attnmap'))
+			torch.save(out, f)
+			if idx%1000==0:
+				print('%d/%d finished in the %s set.'%(idx,len(bracket_files),d))
+				sys.stdout.flush()	
+		# print(level_dict)
 
 
 	

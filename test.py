@@ -50,6 +50,7 @@ if __name__ == '__main__':
 	parser.add_argument("-batch_size", default=32, type=int)
 	parser.add_argument("-attention_type", default='fixed_rand', type=str)
 	parser.add_argument("-model_name", default='edu_bertunitencoder_fixed_rand_lowresource_1', type=str)
+	parser.add_argument("-model_path", default='./trained_models/', type=str)
 	# parser.add_argument("-use_tree_attnmap", default=False, type=bool)
 	parser.add_argument("-dataset", default='cnndm', type=str)
 	parser.add_argument("-alternative_attnmap", default='none', type=str)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
 
 
 	model_name = args.model_name
-	save_path = './trained_models/%s/'%(model_name)
+	save_path = args.model_path+ model_name
 	bert_config= './bert_config_uncased_base.json'
 
 	unit = args.unit
