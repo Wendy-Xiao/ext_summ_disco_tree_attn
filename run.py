@@ -75,9 +75,7 @@ def evaluate(model,dataloader,pos_weight,device, hyp_path, ref_path, \
 
 
 def evaluate_batch(model, sigmoid,batch, pos_weight, device, hyp_path,ref_path,  \
-					word_length_limit, unit_length_limit, use_edu=True,\
-					use_mmr=False, lamb=0.6,\
-					use_trigram_block=False):
+					word_length_limit, unit_length_limit, use_edu=True):
 	out,unit_repre = model(batch,device)
 	# batch * length
 	loss = F.binary_cross_entropy_with_logits(out.squeeze(2),batch.unit_labels,weight = batch.unit_mask,reduction='sum',pos_weight=pos_weight)
@@ -122,7 +120,6 @@ def predict(score_batch, ids, src_txt_list, hyp_path,ref_path,\
 				cur_select = select_edus_with_dependent(j,dep_dict)
 				# cur_select=j
 				cur_select = list(set(cur_select)-set(selected_ids))
-				# use trigram trick
 				#update selected summary
 				for idx in cur_select:
 					summary.append(' '.join(src_txt_list[i][idx]))

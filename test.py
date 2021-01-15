@@ -32,16 +32,6 @@ if __name__ == '__main__':
 	parser.add_argument("-n_head", type=int, default=8)
 	parser.add_argument("-dropout", type=float, default=0.1)
 
-	parser.add_argument("-optim", default='adam', type=str)
-	parser.add_argument("-lr", default=1e-5, type=float)
-	parser.add_argument("-eps", default=1e-8, type=float)
-	parser.add_argument("-weight_decay", default=0, type=float)
-	parser.add_argument("-beta1", default= 0.9, type=float)
-	parser.add_argument("-beta2", default=0.999, type=float)
-	parser.add_argument("-decay_method", default='noam', type=str)
-	parser.add_argument("-warmup_steps", default=10000, type=int)
-	# parser.add_argument("-max_grad_norm", default=0, type=float)
-
 	parser.add_argument("-test_inputs_dir", default='./data/test/', type=str)
 	parser.add_argument("-unit", default='edu', type=str)
 	parser.add_argument("-device", default=2, type=int)

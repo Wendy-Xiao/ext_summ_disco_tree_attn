@@ -1,6 +1,14 @@
 # Extractive Summarization with Discourse Tree Attention
 This is the official code for the paper 'Do We Really Need That Many Parameters In Transformer For Extractive Summarization? Discourse Can Help !' (CODI at EMNLP 2020)
 
+## Prepare
+You need 
+- Python3
+- Pytorch
+- Pandas
+- Numpy
+- rouge_papier_v2 can be found [here](https://github.com/Wendy-Xiao/Extsumm_local_global_context/tree/master/rouge_papier_v2)
+
 ## Data and Trained Models
 The CNNDM dataset with generated attention maps (C-tree w/ Nuc) can be found [here](https://drive.google.com/drive/folders/17UNXb7ls-t18OKN54HHM7YMksqawBtGa?usp=sharing). It is based on the dataset from [DiscoBERT](https://github.com/jiacheng-xu/DiscoBERT) with segmented EDUs.
 

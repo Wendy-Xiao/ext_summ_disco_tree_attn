@@ -190,9 +190,7 @@ if __name__ == '__main__':
 				sys.stdout.flush()
 			if (optimizer._step % eval_steps==0):
 				r2,l=evaluate(model,val_dataloader,pos_weight,device, hyp_path, ref_path, \
-								word_length_limit=word_length_limit, unit_length_limit=unit_length_limit, \
-								use_mmr=use_mmr, lamb=lamb_for_mmr,\
-								use_trigram_block=use_trigram_block,use_edu=use_edu)
+								word_length_limit=word_length_limit, unit_length_limit=unit_length_limit, use_edu=use_edu)
 				model.train()
 				print('Validation loss: %f'%(l))
 				time_epoch_end_new = timer()
