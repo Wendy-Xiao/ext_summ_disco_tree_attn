@@ -29,7 +29,7 @@ if __name__ == '__main__':
 	parser.add_argument("-d_mlp", type=int, default=100)
 
 	parser.add_argument("-n_layers", type=int, default=2)
-	parser.add_argument("-n_head", type=int, default=8)
+	parser.add_argument("-n_head", type=int, default=1)
 	parser.add_argument("-dropout", type=float, default=0.1)
 
 	parser.add_argument("-test_inputs_dir", default='./data/test/', type=str)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
 
 	model_name = args.model_name
-	save_path = args.model_path+ model_name
+	MODEL_PATH = args.model_path+ model_name
 	bert_config= './bert_config_uncased_base.json'
 
 	unit = args.unit
@@ -77,7 +77,6 @@ if __name__ == '__main__':
 
 	print('load model')
 	model = DiscoExtSumm(args,load_pretrained_bert=False,bert_config=config).to(device)
-	MODEL_PATH = save_path+'/best_r2'
 	if torch.cuda.is_available():
 	    model=model.to(device)
 	model.load_state_dict(torch.load(MODEL_PATH,map_location=device))
@@ -96,7 +95,7 @@ if __name__ == '__main__':
 	
 	test = SummarizationDataset(test_inputs_dir,to_shuffle=False, is_test=True,dataset_type='test',\
 		dataset=args.dataset,attnmap_type=attnmap_type)
-	test_dataloader = SummarizationDataLoader(test,is_test=True,device=device,batch_size=batch_size,bert_unit_encoder=args.bert_unit_encoder, unit=unit)	
+	test_dataloader = SummarizationDataLoader(test,is_test=True,device=device,batch_size=batch_size,unit=unit)	
 	print('start evaluate')
 	r2,l=evaluate(model,test_dataloader,pos_weight,device, hyp_path, ref_path, \
 					word_length_limit=word_length_limit, unit_length_limit=unit_length_limit, \

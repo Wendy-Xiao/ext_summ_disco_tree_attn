@@ -87,9 +87,9 @@ if __name__ == '__main__':
 
 	if torch.cuda.is_available():
 		device = torch.device("cuda:%d"%(args.device))
+		torch.cuda.set_device(args.device)
 	else:
 		device = torch.device("cpu")
-	torch.cuda.set_device(args.device)
 	if not os.path.exists(save_path):
 		os.makedirs(save_path)
 	if not os.path.exists(hyp_path):
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 	print('load training data.')
 
 	attnmap_type = args.alternative_attnmap
-	print('attention type: %s'%(attnmap_type))
+	print('Alternative attention type: %s'%(attnmap_type))
 
 	if args.num_train_data!=None:
 		all_files = sorted(os.listdir(inputs_dir))
@@ -145,6 +145,8 @@ if __name__ == '__main__':
 	time_start = timer()
 	time_epoch_end_old = time_start
 	stop_steps=24000
+
+	## For low-resource experiments
 	if args.num_train_data!=None:
 		# report_steps = 5*args.num_train_data
 		# eval_steps = 30*args.num_train_data

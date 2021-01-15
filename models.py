@@ -171,7 +171,6 @@ class DiscoExtSumm(nn.Module):
 		n_layers, n_head, d_k, d_v, d_inner,d_mlp=args.n_layers, args.n_head, args.d_k, args.d_v, args.d_inner,args.d_mlp
 		attention_type=args.attention_type
 
-		self.posemb =posemb
 		self.PositionEncoder = PositionalEncoding(dropout, 768)	
 
 		self.attention_type=attention_type
