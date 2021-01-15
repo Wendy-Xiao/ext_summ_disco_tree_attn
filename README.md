@@ -6,7 +6,7 @@ The CNNDM dataset with generated attention maps (C-tree w/ Nuc) can be found [he
 
 The trained model with discourse tree attention can be found [here](https://drive.google.com/drive/folders/1Hg0IkE42YPyUZpufZXm6OOMsEdhoQSy3?usp=sharing)
 
-## EDU Segmentor and Discourse Parser
+## Discourse Parser
 We use the state-of-the-art [Discourse Parser](https://github.com/yizhongw/StageDP)
 
 ## How to train the model
